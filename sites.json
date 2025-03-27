@@ -1,0 +1,168 @@
+{
+  "réseaux sociaux": [
+    {
+      "name": "Facebook",
+      "url_pattern": "https://www.facebook.com/$pseudo",
+      "search_url": "https://www.facebook.com/search/people/?q=$pseudo"
+    },
+    {
+      "name": "Instagram",
+      "url_pattern": "https://www.instagram.com/$pseudo",
+      "search_url": "https://www.instagram.com/web/search/topsearch/?context=blended&query=$pseudo"
+    },
+    {
+      "name": "LinkedIn",
+      "url_pattern": "https://www.linkedin.com/in/$pseudo",
+      "search_url": "https://www.linkedin.com/search/results/all/?keywords=$pseudo&origin=GLOBAL_SEARCH_HEADER"
+    },
+    {
+      "name": "Twitter",
+      "url_pattern": "https://twitter.com/$pseudo",
+      "search_url": "https://twitter.com/search?q=$pseudo"
+    },
+    {
+      "name": "Telegram",
+      "url_pattern": "https://t.me/$pseudo",
+      "search_url": "https://telegram.me/$pseudo"
+    },
+    {
+      "name": "Discord",
+      "url_pattern": "https://discord.com/users/$pseudo",
+      "search_url": "https://discord.com/channels/@me"
+    },
+    {
+      "name": "Mastodon",
+      "url_pattern": "https://mastodon.social/@$pseudo",
+      "search_url": "https://mastodon.social/search"
+    }
+  ],
+  "développement": [
+    {
+      "name": "GitHub",
+      "url_pattern": "https://github.com/$pseudo",
+      "search_url": "https://github.com/search?q=$pseudo&type=users"
+    },
+    {
+      "name": "Stack Overflow",
+      "url_pattern": "https://stackoverflow.com/users/$pseudo",
+      "search_url": "https://stackoverflow.com/search?q=$pseudo"
+    }
+  ],
+  "communautés": [
+    {
+      "name": "Clubic Forum",
+      "url_pattern": "https://forum.clubic.com/u/$pseudo/summary",
+      "search_url": "https://forum.clubic.com/search?q=$pseudo&search_type=users"
+    },
+    {
+      "name": "Reddit",
+      "url_pattern": "https://www.reddit.com/user/$pseudo",
+      "search_url": "https://www.reddit.com/search/?q=$pseudo&type=user"
+    },
+    {
+      "name": "4chan",
+      "url_pattern": "https://boards.4channel.org/search#/$pseudo",
+      "search_url": "https://boards.4channel.org/search#/$pseudo"
+    },
+    {
+      "name": "Quora",
+      "url_pattern": "https://www.quora.com/profile/$pseudo",
+      "search_url": "https://www.quora.com/search?q=$pseudo&type=profile"
+    },
+    {
+      "name": "Jeuxvideo.com Forum",
+      "url_pattern": "https://www.jeuxvideo.com/profil/$pseudo?mode=infos",
+      "search_url": "https://www.jeuxvideo.com/recherche/forums/$pseudo"
+    }
+  ],
+  "vidéo": [
+    {
+      "name": "YouTube",
+      "url_pattern": "https://www.youtube.com/user/$pseudo",
+      "search_url": "https://www.youtube.com/results?search_query=$pseudo&sp=EgIQAg%253D%253D"
+    },
+    {
+      "name": "Twitch",
+      "url_pattern": "https://www.twitch.tv/$pseudo",
+      "search_url": "https://www.twitch.tv/search?term=$pseudo"
+    },
+    {
+      "name": "TikTok",
+      "url_pattern": "https://www.tiktok.com/@$pseudo",
+      "search_url": "https://www.tiktok.com/search?q=$pseudo"
+    }
+  ],
+  "design": [
+    {
+      "name": "Dribbble",
+      "url_pattern": "https://dribbble.com/$pseudo",
+      "search_url": "https://dribbble.com/designers?search[keywords]=$pseudo"
+    },
+    {
+      "name": "Behance",
+      "url_pattern": "https://www.behance.net/$pseudo",
+      "search_url": "https://www.behance.net/search?search=$pseudo"
+    }
+  ],
+  "blog": [
+    {
+      "name": "Blogspot",
+      "url_pattern": "https://$pseudo.blogspot.com/",
+      "search_url": "https://www.google.com/search?q=$pseudo+site:blogspot.com"
+    },
+    {
+      "name": "WordPress",
+      "url_pattern": "https://$pseudo.wordpress.com/",
+      "search_url": "https://wordpress.com/read/search?q=$pseudo"
+    },
+    {
+      "name": "Medium",
+      "url_pattern": "https://medium.com/@$pseudo",
+      "search_url": "https://medium.com/search?q=$pseudo"
+    }
+  ],
+  "jeux": [
+    {
+      "name": "Minecraft",
+      "url_pattern": "https://namemc.com/profile/$pseudo",
+      "search_url": "https://namemc.com/search?q=$pseudo"
+    },
+    {
+      "name": "Roblox",
+      "url_pattern": "https://www.roblox.com/user.aspx?username=$pseudo",
+      "search_url": "https://www.roblox.com/search/users?keyword=$pseudo"
+    },
+    {
+      "name": "Steam",
+      "url_pattern": "https://steamcommunity.com/id/$pseudo",
+      "search_url": "https://steamcommunity.com/search/users/#text=$pseudo"
+    },
+    {
+      "name": "Agar.io",
+      "url_pattern": "https://agar.io/#$pseudo",
+      "search_url": "https://agar.io/"
+    },
+    {
+      "name": "Slither.io",
+      "url_pattern": "http://slither.io/#$pseudo",
+      "search_url": "http://slither.io/"
+    }
+  ],
+  "forums": [
+    {
+      "name": "XenForo",
+      "url_pattern": "https://xenforo.com/community/members/?username=$pseudo",
+      "search_url": "https://xenforo.com/community/search/member?username=$pseudo"
+    },
+    {
+      "name": "phpBB",
+      "url_pattern": "https://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=$pseudo",
+      "search_url": "https://www.phpbb.com/search/?q=artemis37$pseudo"
+    },
+    {
+      "name": "vBulletin",
+      "url_pattern": "https://www.vbulletin.com/forum/member.php?username=$pseudo",
+      "search_url": "https://www.vbulletin.com/forum/search.php?do=process&query=$pseudo&titleonly=0&searchuser=$pseudo"
+    }
+  ]
+}
