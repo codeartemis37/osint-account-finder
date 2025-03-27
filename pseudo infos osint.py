@@ -91,37 +91,51 @@ class UsernameChecker:
         except requests.exceptions.RequestException as e:
             print(f"Erreur lors de la vérification de {category} - {name}: {str(e)}")
 
-    def find_linked_accounts(self):
-        linked_accounts = defaultdict(set)  # Use a set to avoid duplicates
-        
+    def find_linked_accounts(self, user):
+        linked_accounts = defaultdict(set)
+    
         for category, data in self.results.items():
             for name, base_url in data['exact']:
                 try:
                     response = requests.get(base_url, headers=self.headers, timeout=30)
+                    response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
                     soup = BeautifulSoup(response.text, 'html.parser')
                     links = soup.find_all('a', href=True)
-
+    
                     parsed_base_url = urlparse(base_url.lower())
-
+    
                     for link in links:
                         href = link['href']
-                        absolute_url = urljoin(base_url, href)  # Ensure absolute URL
+                        absolute_url = urljoin(base_url, href)  # Ensure it's an absolute URL
                         parsed_href = urlparse(absolute_url.lower())
-                        
-                        # Check if the link is not on the same domain
-                        if parsed_href.netloc != parsed_base_url.netloc:
-                            # Check if the link is present in the sites.json
-                            for cat, site_name, site_url, _ in self.sites:
-                                if site_name.lower() in absolute_url.lower():
-                                    linked_accounts[site_name].add(absolute_url)  # Add to set
-
+    
+                        # Check if the link is external
+                        if parsed_href.netloc and parsed_href.netloc != parsed_base_url.netloc:
+                            # Check if the username is in the URL *as a username component*
+                            # This is a heuristic and might need adjustment
+                            path_segments = parsed_href.path.split('/')
+                            if user in path_segments:
+                                # Find the site name corresponding to the linked URL
+                                linked_site_name = None
+                                for _, site_name, site_url, _ in self.sites:
+                                    parsed_site_url = urlparse(site_url.lower().replace('$pseudo', user))
+                                    if parsed_href.netloc == parsed_site_url.netloc:
+                                        linked_site_name = site_name
+                                        break  # Stop after the first match
+    
+                                if linked_site_name:
+                                    linked_accounts[linked_site_name].add(absolute_url)
+    
                 except requests.exceptions.RequestException as e:
-                    print(f"Erreur lors de la recherche de comptes liés pour {name}: {str(e)}")
-
-        # Convert sets to lists for consistent output format and remove duplicates
+                        print(f"Erreur lors de la recherche de comptes liés pour {name}: {str(e)}")
+                except Exception as e:
+                    print(f"Erreur inattendue lors de la recherche de comptes liés pour {name}: {type(e).__name__} - {str(e)}")
+    
+    
+        # Convert sets to lists for consistent output format
         linked_accounts_list = {site: list(urls) for site, urls in linked_accounts.items()}
         return linked_accounts_list
-    
+        
     def find_real_identity(self):
         real_identity = {}
         for category, data in self.results.items():
@@ -154,7 +168,7 @@ class UsernameChecker:
             for future in as_completed(futures):
                 future.result()
 
-        linked_accounts = self.find_linked_accounts()
+        linked_accounts = self.find_linked_accounts(pseudo)
         real_identity = self.find_real_identity()
 
         return self.results, linked_accounts, real_identity
