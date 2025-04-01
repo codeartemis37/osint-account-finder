@@ -42,7 +42,7 @@ class UsernameChecker:
     def extract_search_results(self, html_content, search_url):
         soup = BeautifulSoup(html_content, 'html.parser')
         
-        error_messages = ["Aucun", "No results found", "nobody", "Sorry", "banned", "incorrect", "cannot be found"]
+        error_messages = ["Aucun", "No results found", "nobody", "Sorry", "banned", "incorrect", "cannot be found", "404", "nothing"]
         for message in error_messages:
             if message.lower() in soup.get_text().lower():
                 return []
@@ -198,3 +198,4 @@ if __name__ == "__main__":
         print(f"| + {account}:")
         for key, value in identity.items():
             print(f"| |- {key}: {value}")
+    input()
