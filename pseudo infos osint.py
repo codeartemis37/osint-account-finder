@@ -8,6 +8,9 @@ from difflib import SequenceMatcher
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 
+LOGGED_MESSAGES = ["registered", "logged", "connecté", "login"]
+ERROR_MESSAGES = ["Aucun", "No results found", "nobody", "Sorry", "banned", "incorrect", "cannot be found", "404", "nothing"]
+
 class UsernameChecker:
     def __init__(self, username):
         self.username = username
@@ -42,8 +45,7 @@ class UsernameChecker:
     def extract_search_results(self, html_content, search_url):
         soup = BeautifulSoup(html_content, 'html.parser')
         
-        error_messages = ["Aucun", "No results found", "nobody", "Sorry", "banned", "incorrect", "cannot be found", "404", "nothing"]
-        for message in error_messages:
+        for message in ERROR_MESSAGES:
             if message.lower() in soup.get_text().lower():
                 return []
 
@@ -58,26 +60,34 @@ class UsernameChecker:
             score = self.similarity_score(self.username, full_text)
             
             if score > 0.5 and url:
-                results.append({'url': url, 'text': full_text, 'score': score})
+                for message in LOGGED_MESSAGES:
+                    if message.lower() in soup.get_text().lower():
+                        results.append({'url': url, 'text': full_text, 'score': score, 'additionals_infos': '(must loggued for confirm)'})
+                    else:
+                        results.append({'url': url, 'text': full_text, 'score': score, 'additionals_infos': ''})
         
         return sorted(results, key=lambda x: x['score'], reverse=True)
 
     def check_site(self, category, name, url_pattern, search_url):
         exact_url = url_pattern.replace('$pseudo', self.username)
-        
         if not self.is_valid_url(exact_url):
             print(f"URL non valide : {exact_url}")
             return
-
         try:
             with requests.Session() as session:
                 response = session.get(exact_url, headers=self.headers, timeout=30)
                 if response.status_code == 200:
+                    soup = BeautifulSoup(response.text, 'html.parser')
+                    # Vérification des messages liés au login
+                    additionals_infos = ''
+                    for message in LOGGED_MESSAGES:
+                        if message.lower() in soup.get_text().lower():
+                            additionals_infos = 'must_logged'
+                            break
                     with self.lock:
                         if exact_url not in self.seen_exact:
-                            self.results[category]['exact'].append((name, exact_url))
+                            self.results[category]['exact'].append((name, exact_url, additionals_infos))
                             self.seen_exact.add(exact_url)
-
                 if search_url:
                     search_response = session.get(search_url.replace('$pseudo', self.username), headers=self.headers, timeout=30)
                     if search_response.status_code == 200:
@@ -87,7 +97,6 @@ class UsernameChecker:
                                 if result['url'] not in self.seen_search:
                                     self.results[category]['search'].append((name, result))
                                     self.seen_search.add(result['url'])
-
         except requests.exceptions.RequestException as e:
             print(f"Erreur lors de la vérification de {category} - {name}: {str(e)}")
 
@@ -95,7 +104,7 @@ class UsernameChecker:
         linked_accounts = defaultdict(set)
     
         for category, data in self.results.items():
-            for name, base_url in data['exact']:
+            for name, base_url, additionals_infos in data['exact']:
                 try:
                     response = requests.get(base_url, headers=self.headers, timeout=30)
                     response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
@@ -139,7 +148,7 @@ class UsernameChecker:
     def find_real_identity(self):
         real_identity = {}
         for category, data in self.results.items():
-            for name, url in data['exact']:
+            for name, url, additionals_infos in data['exact']:
                 try:
                     response = requests.get(url, headers=self.headers, timeout=30)
                     if response and response.raw._connection and response.raw._connection.sock:
@@ -181,11 +190,11 @@ if __name__ == "__main__":
     for category, data in results.items():
         print(f"\n=== {category.upper()} ===")
         if data['exact']:
-            for name, url in data['exact']:
-                print(f"[100.00%] {name}: {url}")
+            for name, url, additionals_infos in data['exact']:
+                print(f"[100.00%] {name}: {url} {additionals_infos}")
         if data['search']:
-            for name, result in data['search']:
-                print(f"[{result['score']*100:6.2f}%] {name}: {result['url']}")
+            for name, result, additionals_infos in data['search']:
+                print(f"[{result['score']*100:6.2f}%] {name}: {result['url']} {additionals_infos}")
 
     print("\n=== COMPTES LIÉS ===")
     for site, urls in linked_accounts.items():
