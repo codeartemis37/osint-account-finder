@@ -1,0 +1,3 @@
+[ ] ajouter : ```for message in ERROR_MESSAGES:
+            if message.lower() in soup.get_text().lower():
+                return []```dans check_site()
